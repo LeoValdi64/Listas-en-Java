@@ -1,11 +1,25 @@
+/**
+ * La clase Lista representa una lista doblemente enlazada.
+ * Permite agregar, eliminar y buscar elementos en la lista.
+ */
 public class Lista {
     private Node top, back;
 
+    /**
+     * Constructor de la clase Lista.
+     * Inicializa los punteros top y back como nulos.
+     */
     Lista() {
         top = null;
         back = null;
     }
 
+    /**
+     * Verifica si un elemento con la clave especificada existe en la lista.
+     * Realiza una búsqueda bidireccional desde los extremos de la lista.
+     * @param key la clave del elemento a buscar
+     * @return true si el elemento existe, false en caso contrario
+     */
     public boolean exists(String key) {
         // Busqueda bidireccional
         Node alante = top;
@@ -19,6 +33,10 @@ public class Lista {
         return false;
     }
 
+    /**
+     * Obtiene la longitud de la lista.
+     * @return el número de elementos en la lista
+     */
     public int length() {
         Node temp = top;
         int n = 0;
@@ -29,6 +47,12 @@ public class Lista {
         return n;
     }
 
+    /**
+     * Agrega un nuevo elemento al inicio de la lista.
+     * @param key la clave del elemento a agregar
+     * @param data los datos del elemento a agregar
+     * @throws IllegalArgumentException si ya existe un elemento con la misma clave en la lista
+     */
     public void add(String key, String data) {
         if (exists(key))
             throw new IllegalArgumentException(
@@ -47,6 +71,12 @@ public class Lista {
 
     }
 
+    /**
+     * Agrega un nuevo elemento al final de la lista.
+     * @param key la clave del elemento a agregar
+     * @param data los datos del elemento a agregar
+     * @throws IllegalArgumentException si ya existe un elemento con la misma clave en la lista
+     */
     public void addBack(String key, String data) {
         if (exists(key))
             throw new IllegalArgumentException(
@@ -64,6 +94,14 @@ public class Lista {
         }
     }
 
+    /**
+     * Agrega un nuevo elemento después de un elemento específico en la lista.
+     * @param after la clave del elemento después del cual se agregará el nuevo elemento
+     * @param key la clave del elemento a agregar
+     * @param data los datos del elemento a agregar
+     * @throws IllegalArgumentException si ya existe un elemento con la misma clave en la lista
+     * @throws IllegalArgumentException si el elemento después del cual se desea agregar no existe en la lista
+     */
     public void addAfter(String after, String key, String data) {
         if (exists(key))
             throw new IllegalArgumentException(
@@ -95,6 +133,10 @@ public class Lista {
         }
     }
 
+    /**
+     * Elimina el primer elemento de la lista.
+     * @throws IllegalArgumentException si la lista está vacía
+     */
     public void removeTop() {
         if (top == null) {
             throw new IllegalArgumentException(
@@ -110,6 +152,10 @@ public class Lista {
         }
     }
 
+    /**
+     * Elimina el último elemento de la lista.
+     * @throws IllegalArgumentException si la lista está vacía
+     */
     public void removeBack() {
         if (back == null) {
             throw new IllegalArgumentException(
@@ -125,6 +171,12 @@ public class Lista {
         }
     }
 
+    /**
+     * Elimina el elemento con la clave especificada de la lista.
+     * @param key la clave del elemento a eliminar
+     * @throws IllegalArgumentException si la lista está vacía
+     * @throws IllegalArgumentException si el elemento a eliminar no existe en la lista
+     */
     public void remove(String key) {
         if (top == null) {
             throw new IllegalArgumentException(
@@ -167,6 +219,10 @@ public class Lista {
         }
     }
 
+    /**
+     * Devuelve una representación en forma de cadena de la lista.
+     * @return una cadena que representa la lista
+     */
     @Override
     public String toString() {
         Node temp = top;
