@@ -1,7 +1,7 @@
 public class MainLista{
     public static String letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static void main(String[] args) {
-        int matriz[][] = {{10,-1,10},{10,-1,-1},{10,-1,10}};
+        int matriz[][] = {{10,-1,10},{10,-1,-1},{100,-1,10}};
         Lista filas = sacarFilas(matriz);
         Lista cols = sacarCalumnas(matriz);
         mostrarMatriz(matriz);
@@ -44,14 +44,42 @@ public class MainLista{
         }
         return filas;
     }
-    public static void mostrarMatriz(int[][] matriz){
-        for (int i = 0; i < matriz.length; i++) {
 
-            for (int j = 0; j < matriz[i].length; j++) {
-                System.out.print(matriz[i][j]+", ");
-            }
-            System.out.println();
-        }
-        
+    public static void mostrarMatriz(int[][] matriz) {
+    if (matriz.length == 0 || matriz[0].length == 0) {
+        System.out.println("La matriz está vacía.");
+        return;
     }
+
+    // Determinar el ancho de la columna
+    int anchoColumna = 5;
+
+    // Imprimir los encabezados de las columnas
+    System.out.print("     "); // Espacio para los números de fila
+    for (int i = 0; i < matriz[0].length; i++) {
+        System.out.printf("%-" + anchoColumna + "s", columnaAExcel(i + 1));
+    }
+    System.out.println();
+
+    // Imprimir los datos de la matriz
+    for (int fila = 0; fila < matriz.length; fila++) {
+        System.out.printf("%4d ", fila + 1); // Números de fila con espaciado
+        for (int col = 0; col < matriz[fila].length; col++) {
+            System.out.printf("%-" + anchoColumna + "d", matriz[fila][col]);
+        }
+        System.out.println();
+    }
+}
+
+    
+
+    public static String columnaAExcel(int columna) {
+        StringBuilder res = new StringBuilder();
+        while (columna-- > 0) {
+            res.insert(0, (char)('A' + columna % 26));
+            columna /= 26;
+        }
+        return res.toString();
+    }
+    
 }
