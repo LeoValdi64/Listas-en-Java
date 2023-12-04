@@ -1,62 +1,96 @@
-public class Celda {
-    private Lista ListaRow;
-    private Lista ListaCol;
 
+public class Celda {
     class Node {
+        int row;
+        int col;
         String data;
+        Node next;
+        Node previous;
         Node up;
         Node down;
-        Node left;
-        Node right;
-        int row;
-        String col;
     }
 
-    private Node row, col;
+    private Node celda;
 
-    Celda(String[][] matriz) {
-        ListaRow = sacarFilas(matriz);
-        ListaCol = sacarCalumnas(matriz);
-        row = new Node();
-        col = new Node();
-        System.out.println("Columnas: " + ListaCol);
-        System.out.println("Filas: " + ListaRow);
+    Celda() {
+        celda = new Node();
     }
 
-    private static Lista sacarFilas(String[][] matriz) {
-        Lista filas = new Lista();
-        int cont = 0;
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                if (matriz[i][j].equals("")) {
-                    cont++;
-                }
-
-            }
-            if (!(cont >= matriz[i].length)) {
-                filas.addBack(Integer.toString(i + 1), null);
-            }
-            cont = 0;
+    public void add(int row, int col, String data) {
+        if (celda.data == null) { // En el caso que sea la primera celda
+            celda.row = row;
+            celda.col = col;
+            celda.data = data;
+            return;
         }
-        return filas;
-    }
+        Node temp = new Node();
+        Node temp2 = celda;
+        temp.data = data;
+        temp.row = row;
+        temp.col = col;
 
-    public static Lista sacarCalumnas(String[][] matriz) {
-        String letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        Lista cols = new Lista();
-        int cont = 0;
-        for (int j = 0; j < matriz[0].length; j++) {
-            for (int i = 0; i < matriz.length; i++) {
-                if (matriz[i][j].equals("")) {
-                    cont++;
+        while (temp2 != null) {
+            if (temp2.row == row && temp2.col == col) {// En el caso que ya exista una celda en esa posicion
+                temp2.data = data;
+                return;
+            }
+
+            if (temp2.col > col) {// En el caso que la columna deba ir al principio
+                temp.next = temp2;
+                temp2.previous = temp;
+                celda = temp;
+                return;
+            }
+
+            if (temp2.next == null) {// En el caso que sea la ultima columna
+                temp2.next = temp;
+                temp.previous = temp2;
+                return;
+            }
+
+            if (temp2.next != null) {
+                if (temp2.col < col && temp2.next.col > col) {// En el caso que la columna deba ir
+                                                              // en medio
+                    if (row < temp2.row) {// En el caso que la fila deba ir al principio
+                        temp2.up = temp;
+                        temp.down = temp2;
+                        
+                        return;
+                    }
+                    temp2.next.previous = temp;
+                    temp.next = temp2.next;
+                    temp2.next = temp;
+                    temp.previous = temp2;
+                    return;
+
                 }
             }
-            if (!(cont >= matriz[j].length)) {
-                cols.addBack(String.valueOf(letras.charAt(j)), null);
-            }
-            cont = 0;
+            temp2 = temp2.next;
         }
-        return cols;
+
+    }
+
+    @Override
+    public String toString() {
+        Node temp = celda;
+        String d = "";
+        while (temp != null) {
+            Node temp2 = temp;
+            d += ("(");
+            while (temp2 != null) {
+                d += (temp2.data);
+                temp2 = temp2.down;
+                if (temp2 != null) {
+                    d += (", ");
+                }
+            }
+            d += (")");
+            temp = temp.next;
+            if (temp != null) {
+                d += (", ");
+            }
+        }
+        return d;
     }
 
 }

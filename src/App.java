@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+    private Celda celda = new Celda();
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -49,6 +51,7 @@ public class App extends Application {
                 GridPane.setColumnIndex(textField, j + 1); // +1 por los números
                 celdas[i][j] = textField;
                 grid.getChildren().add(textField);
+                
             }
         }
 
@@ -62,15 +65,16 @@ public class App extends Application {
 
     }
 
+    //Evento de escribir en la celda
     EventHandler<KeyEvent> manejarEscritura = new EventHandler<KeyEvent>() {
     @Override
     public void handle(KeyEvent event) {
         TextField textField = (TextField) event.getSource();
         int fila = GridPane.getRowIndex(textField) - 1; // -1 porque la primera fila son las etiquetas
-        int columna = GridPane.getColumnIndex(textField) - 1; // -1 porque la primera columna son las etiquetasa
+        int columna = GridPane.getColumnIndex(textField) - 1; // -1 porque la primera columna son las etiquetas
+        celda.add(fila, columna, textField.getText());
+        System.out.println(celda.toString());
         
-        System.out.println("Escribiendo en la celda: Fila " +( fila+1) + ", Columna " + (char)('A' + columna));
-        // Aquí puedes agregar más lógica según necesites
     }
 };
 
