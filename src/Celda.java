@@ -1,6 +1,6 @@
 
 public class Celda {
-    class Node {
+    private class Node {
         int row;
         int col;
         String data;
@@ -8,64 +8,70 @@ public class Celda {
         Node previous;
         Node up;
         Node down;
+        Node(int row, int col, String data) {
+            this.row = row;
+            this.col = col;
+            this.data = data;
+            this.next = null;
+            this.previous = null;
+            this.up = null;
+            this.down = null;
+        }
+        
     }
 
     private Node celda;
 
     Celda() {
-        celda = new Node();
+        celda = null;
     }
 
     public void add(int row, int col, String data) {
+        Node temp = new Node(row, col, data);
+
         if (celda.data == null) { // En el caso que sea la primera celda
-            celda.row = row;
-            celda.col = col;
-            celda.data = data;
+            celda = temp;
             return;
         }
-        Node temp = new Node();
-        Node temp2 = celda;
-        temp.data = data;
-        temp.row = row;
-        temp.col = col;
+        Node ejeX = celda;
 
-        while (temp2 != null) {
-            if (temp2.row == row && temp2.col == col) {// En el caso que ya exista una celda en esa posicion
-                temp2.data = data;
+        while (ejeX != null) {
+            if (ejeX.row == row && ejeX.col == col) {// En el caso que ya exista una celda en esa posicion
+                ejeX.data = data;
                 return;
             }
 
-            if (temp2.col > col) {// En el caso que la columna deba ir al principio
-                temp.next = temp2;
-                temp2.previous = temp;
+            if (ejeX.col > col) {// En el caso que la columna deba ir al principio
+                temp.next = ejeX;
+                ejeX.previous = temp;
                 celda = temp;
                 return;
             }
 
-            if (temp2.next == null) {// En el caso que sea la ultima columna
-                temp2.next = temp;
-                temp.previous = temp2;
+            if (ejeX.next == null) {// En el caso que sea la ultima columna
+                ejeX.next = temp;
+                temp.previous = ejeX;
                 return;
             }
 
-            if (temp2.next != null) {
-                if (temp2.col < col && temp2.next.col > col) {// En el caso que la columna deba ir
+            if (ejeX.next != null) {
+                if (ejeX.col < col && ejeX.next.col > col) {// En el caso que la columna deba ir
                                                               // en medio
-                    if (row < temp2.row) {// En el caso que la fila deba ir al principio
-                        temp2.up = temp;
-                        temp.down = temp2;
+                    if (row < ejeX.row) {// En el caso que la fila deba ir al principio
+                        ejeX.up = temp;
+                        temp.down = ejeX;
                         
                         return;
                     }
-                    temp2.next.previous = temp;
-                    temp.next = temp2.next;
-                    temp2.next = temp;
-                    temp.previous = temp2;
+                    ejeX.next.previous = temp;
+                    temp.next = ejeX.next;
+                    ejeX.next = temp;
+                    temp.previous = ejeX;
                     return;
 
                 }
             }
-            temp2 = temp2.next;
+            ejeX = ejeX.next;
         }
 
     }
