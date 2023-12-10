@@ -51,10 +51,9 @@ public class App extends Application {
                 GridPane.setColumnIndex(textField, j + 1); // +1 por los números
                 celdas[i][j] = textField;
                 grid.getChildren().add(textField);
-                
+
             }
         }
-
 
         grid.setGridLinesVisible(true);
         // Aquí puedes añadir más estilos según necesites
@@ -65,19 +64,25 @@ public class App extends Application {
 
     }
 
-    //Evento de escribir en la celda
+    // Evento de escribir en la celda
     EventHandler<KeyEvent> manejarEscritura = new EventHandler<KeyEvent>() {
-    @Override
-    public void handle(KeyEvent event) {
-        TextField textField = (TextField) event.getSource();
-        int fila = GridPane.getRowIndex(textField) - 1; // -1 porque la primera fila son las etiquetas
-        int columna = GridPane.getColumnIndex(textField) - 1; // -1 porque la primera columna son las etiquetas
-        celda.add(fila, columna, textField.getText());
-        System.out.println(celda.toString());
-        
-    }
-};
+        @Override
+        public void handle(KeyEvent event) {
+            TextField textField = (TextField) event.getSource();
+            int fila = GridPane.getRowIndex(textField) - 1;
+            int columna = GridPane.getColumnIndex(textField) - 1;
 
+            if (textField.getText().equals("")) {
+                celda.remove(fila, columna);
+                System.out.println(celda.toString());
+
+                return;
+            }
+            celda.add(fila, columna, textField.getText());
+            System.out.println(celda.toString());
+
+        }
+    };
 
     public static void main(String[] args) {
         launch(args);

@@ -28,67 +28,134 @@ public class Celda {
     }
 
     public void add(int row, int col, String data) {
-        Node temp = new Node(row, col, data);
+        Node newNode = new Node(row, col, data);
 
-        if (celda == null) { // En el caso que sea la primera celda
-            celda = temp;
-            return;
-        }
-        Node ejeX = celda;
-
-        if (ejeX.col > col) { // Si la columna es menor a la primera
-            temp.next = ejeX;
-            ejeX.previous = temp;
-            celda = temp;
+        // Si la lista está vacía
+        if (celda == null) {
+            celda = newNode;
             return;
         }
 
-        while (ejeX.col != col) {
-            if (ejeX.next == null && col > ejeX.col) {// Si la columna no existe la crea
-                ejeX.next = temp;
-                temp.previous = ejeX;
-                return;
+        // Encontrar o insertar la columna correcta
+        Node colPointer = celda;
+        while (colPointer.col < col && colPointer.next != null) {
+            colPointer = colPointer.next;
+        }
+        if (colPointer.col < col) { // Insertar una nueva columna al final
+            colPointer.next = newNode;
+            newNode.previous = colPointer;
+            colPointer = newNode;
+        } else if (colPointer.col > col) { // Insertar una nueva columna antes
+            newNode.next = colPointer;
+            if (colPointer.previous != null) {
+                colPointer.previous.next = newNode;
+                newNode.previous = colPointer.previous;
+            } else {
+                celda = newNode;
             }
-            if (ejeX.col < col && ejeX.next.col > col) { // Si la columna esta en medio y no existe
-                temp.next = ejeX.next;
-                ejeX.next.previous = temp;
-                ejeX.next = temp;
-                temp.previous = ejeX;
-                return;
+            colPointer.previous = newNode;
+            colPointer = newNode;
+        } else if (colPointer.col == col) {
+            // Encontrar o insertar la fila correcta en la columna existente
+            Node rowPointer = colPointer;
+            while (rowPointer.row < row && rowPointer.down != null) {
+                rowPointer = rowPointer.down;
             }
-            ejeX = ejeX.next;
+            if (rowPointer.row < row) { // Insertar una nueva fila al final
+                rowPointer.down = newNode;
+                newNode.up = rowPointer;
+            } else if (rowPointer.row > row) { // Insertar una nueva fila antes
+                newNode.down = rowPointer;
+                newNode.up = rowPointer.up;
+                if (rowPointer.up != null) {
+                    rowPointer.up.down = newNode;
+                } else {
+                    // Si es el primer nodo en la columna, actualizar el nodo de la columna
+                    if (rowPointer == colPointer) {
+                        if (colPointer.previous != null) {
+                            colPointer.previous.next = newNode;
+                        } else {
+                            celda = newNode;
+                        }
+                        if (colPointer.next != null) {
+                            colPointer.next.previous = newNode;
+                        }
+                        newNode.next = colPointer.next;
+                        newNode.previous = colPointer.previous;
+                    }
+                }
+                rowPointer.up = newNode;
+            } else { // Actualizar el nodo existente
+                rowPointer.data = data;
+            }
+        }
+    }
 
+    public void remove(int row, int col) {
+        if (celda == null) {
+            return; // La lista está vacía
         }
 
-        Node ejeY = ejeX;
-        if (ejeY.row > row) { // Si la fila es menor a la primera
-            ejeY.up = temp;
-            temp.down = ejeY;
-            return;
+        // Buscar la columna correcta
+        Node colPointer = celda;
+        while (colPointer != null && colPointer.col < col) {
+            colPointer = colPointer.next;
         }
-        while (ejeY.row != row) {
 
-            if (ejeY.down == null && row > ejeY.row) {// Si la fila no existe la crea
-                ejeY.down = temp;
-                temp.up = ejeY;
-                return;
+        if (colPointer == null || colPointer.col != col) {
+            return; // No se encontró la columna
+        }
+
+        // Buscar la fila correcta en la columna encontrada
+        Node rowPointer = colPointer;
+        while (rowPointer != null && rowPointer.row < row) {
+            rowPointer = rowPointer.down;
+        }
+
+        if (rowPointer == null || rowPointer.row != row) {
+            return; // No se encontró la fila
+        }
+
+        // Desconectar el nodo
+        if (rowPointer.up != null) {
+            rowPointer.up.down = rowPointer.down;
+        } else {
+            // Si es el primer nodo en la columna, actualizar el nodo de la columna
+            if (colPointer == rowPointer) {
+                if (colPointer.previous != null) {
+                    colPointer.previous.next = colPointer.next;
+                } else {
+                    celda = colPointer.next;
+                }
+                if (colPointer.next != null) {
+                    colPointer.next.previous = colPointer.previous;
+                }
             }
+        }
 
-            if (ejeY.row < row && ejeY.down.row > row) { // Si la fila esta en medio y no existe
-                temp.down = ejeY.down;
-                ejeY.down.up = temp;
-                ejeY.down = temp;
-                temp.up = ejeY;
-                return;
+        if (rowPointer.down != null) {
+            rowPointer.down.up = rowPointer.up;
+        }
+
+        // Ajustar enlaces horizontales si se elimina el primer nodo de una columna
+        if (colPointer == rowPointer) {
+            if (rowPointer.down != null) {
+                if (rowPointer.previous != null) {
+                    rowPointer.previous.next = rowPointer.down;
+                    rowPointer.down.previous = rowPointer.previous;
+                } else {
+                    celda = rowPointer.down;
+                    rowPointer.down.previous = null;
+                }
+            } else {
+                if (rowPointer.previous != null) {
+                    rowPointer.previous.next = rowPointer.next;
+                }
+                if (rowPointer.next != null) {
+                    rowPointer.next.previous = rowPointer.previous;
+                }
             }
-            ejeY = ejeY.down;
         }
-
-        if (ejeX.col == col && ejeY.row == row) { // Si la celda ya existe
-            ejeY.data = data;
-            return;
-        }
-
     }
 
     @Override
@@ -110,27 +177,4 @@ public class Celda {
         }
         return d;
     }
-    // @Override
-    // public String toString() {
-    // Node temp = celda;
-    // String d = "";
-    // while (temp != null) {
-    // Node temp2 = temp;
-    // d += ("(");
-    // while (temp2 != null) {
-    // d += (temp2.data);
-    // temp2 = temp2.down;
-    // if (temp2 != null) {
-    // d += (", ");
-    // }
-    // }
-    // d += (")");
-    // temp = temp.next;
-    // if (temp != null) {
-    // d += (", ");
-    // }
-    // }
-    // return d;
-    // }
-
 }
