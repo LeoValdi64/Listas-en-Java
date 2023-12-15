@@ -69,16 +69,16 @@ public class App extends Application {
         @Override
         public void handle(KeyEvent event) {
             TextField textField = (TextField) event.getSource();
-            int fila = GridPane.getRowIndex(textField) - 1;
-            int columna = GridPane.getColumnIndex(textField) - 1;
+            int fila = GridPane.getRowIndex(textField) ;
+            int columna = GridPane.getColumnIndex(textField) ;
 
             if (textField.getText().equals("")) {
-                celda.remove(fila, columna);
+                celda.remove(fila, columna);    //Se elimina la celda
                 System.out.println(celda.toString());
 
                 return;
             }
-            celda.add(fila, columna, textField.getText());
+            celda.add(fila, columna, textField.getText()); //Se agrega una nueva celda
             System.out.println(celda.toString());
 
         }

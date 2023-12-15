@@ -28,63 +28,63 @@ public class Celda {
     }
 
     public void add(int row, int col, String data) {
-        Node newNode = new Node(row, col, data);
+        Node temp = new Node(row, col, data);
 
         // Si la lista está vacía
         if (celda == null) {
-            celda = newNode;
+            celda = temp;
             return;
         }
 
         // Encontrar o insertar la columna correcta
-        Node colPointer = celda;
-        while (colPointer.col < col && colPointer.next != null) {
-            colPointer = colPointer.next;
+        Node colTemp = celda;
+        while (colTemp.col < col && colTemp.next != null) {
+            colTemp = colTemp.next;
         }
-        if (colPointer.col < col) { // Insertar una nueva columna al final
-            colPointer.next = newNode;
-            newNode.previous = colPointer;
-            colPointer = newNode;
-        } else if (colPointer.col > col) { // Insertar una nueva columna antes
-            newNode.next = colPointer;
-            if (colPointer.previous != null) {
-                colPointer.previous.next = newNode;
-                newNode.previous = colPointer.previous;
+        if (colTemp.col < col) { // Insertar una nueva columna al final
+            colTemp.next = temp;
+            temp.previous = colTemp;
+            colTemp = temp;
+        } else if (colTemp.col > col) { // Insertar una nueva columna antes
+            temp.next = colTemp;
+            if (colTemp.previous != null) {
+                colTemp.previous.next = temp;
+                temp.previous = colTemp.previous;
             } else {
-                celda = newNode;
+                celda = temp;
             }
-            colPointer.previous = newNode;
-            colPointer = newNode;
-        } else if (colPointer.col == col) {
+            colTemp.previous = temp;
+            colTemp = temp;
+        } else if (colTemp.col == col) {
             // Encontrar o insertar la fila correcta en la columna existente
-            Node rowPointer = colPointer;
+            Node rowPointer = colTemp;
             while (rowPointer.row < row && rowPointer.down != null) {
                 rowPointer = rowPointer.down;
             }
             if (rowPointer.row < row) { // Insertar una nueva fila al final
-                rowPointer.down = newNode;
-                newNode.up = rowPointer;
+                rowPointer.down = temp;
+                temp.up = rowPointer;
             } else if (rowPointer.row > row) { // Insertar una nueva fila antes
-                newNode.down = rowPointer;
-                newNode.up = rowPointer.up;
+                temp.down = rowPointer;
+                temp.up = rowPointer.up;
                 if (rowPointer.up != null) {
-                    rowPointer.up.down = newNode;
+                    rowPointer.up.down = temp;
                 } else {
                     // Si es el primer nodo en la columna, actualizar el nodo de la columna
-                    if (rowPointer == colPointer) {
-                        if (colPointer.previous != null) {
-                            colPointer.previous.next = newNode;
+                    if (rowPointer == colTemp) {
+                        if (colTemp.previous != null) {
+                            colTemp.previous.next = temp;
                         } else {
-                            celda = newNode;
+                            celda = temp;
                         }
-                        if (colPointer.next != null) {
-                            colPointer.next.previous = newNode;
+                        if (colTemp.next != null) {
+                            colTemp.next.previous = temp;
                         }
-                        newNode.next = colPointer.next;
-                        newNode.previous = colPointer.previous;
+                        temp.next = colTemp.next;
+                        temp.previous = colTemp.previous;
                     }
                 }
-                rowPointer.up = newNode;
+                rowPointer.up = temp;
             } else { // Actualizar el nodo existente
                 rowPointer.data = data;
             }
